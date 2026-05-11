@@ -10,6 +10,7 @@ import { FinalSection } from "@/components/final-section"
 import { Footer } from "@/components/footer"
 import { LoadingScreen } from "@/components/loading-screen"
 import { SoundToggle } from "@/components/sound-toggle"
+import { SIGNATURE_DISPLAY_OFFSET } from "@/lib/signature-display-offset"
 
 type Signature = {
   id: number
@@ -20,7 +21,7 @@ type Signature = {
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
-  const [petitionCount, setPetitionCount] = useState(0)
+  const [petitionCount, setPetitionCount] = useState(SIGNATURE_DISPLAY_OFFSET)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,7 +37,7 @@ export default function Home() {
         const response = await fetch("/api/signatures?limit=1", { cache: "no-store" })
         if (!response.ok) return
         const data = await response.json()
-        setPetitionCount(data.totalSignatures ?? 0)
+        setPetitionCount((data.totalSignatures ?? 0) + SIGNATURE_DISPLAY_OFFSET)
       } catch {
         // Keep UI available even if API is temporarily unavailable.
       }
@@ -46,7 +47,7 @@ export default function Home() {
   }, [])
 
   const handleSign = (nextCount: number, _signature: Signature) => {
-    setPetitionCount(nextCount)
+    setPetitionCount(nextCount + SIGNATURE_DISPLAY_OFFSET)
   }
 
   if (isLoading) {
