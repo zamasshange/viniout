@@ -51,7 +51,7 @@ export function PetitionSection({
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, margin: "-100px" })
-  const [formData, setFormData] = useState({ name: "", email: "", country: "" })
+  const [formData, setFormData] = useState({ name: "", email: "", country: "", publicName: true })
   const [latestSignatures, setLatestSignatures] = useState<Signature[]>([])
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -142,7 +142,7 @@ export function PetitionSection({
             SIGN THE PETITION
           </h2>
           <p className="text-muted-foreground mt-4 text-lg max-w-2xl mx-auto">
-            Stand with fellow Madridistas worldwide. Your signature matters.
+            We’re pushing for <span className="text-foreground font-semibold">200,000</span> signatures. Your signature matters.
           </p>
         </motion.div>
 
@@ -193,6 +193,16 @@ export function PetitionSection({
                     className="bg-secondary/50 border-border/50 h-14 text-lg placeholder:text-muted-foreground/50 focus:border-primary"
                   />
                 </div>
+
+                <label className="flex items-center gap-3 text-sm text-muted-foreground select-none">
+                  <input
+                    type="checkbox"
+                    checked={!formData.publicName}
+                    onChange={(e) => setFormData({ ...formData, publicName: !e.target.checked })}
+                    className="h-4 w-4 accent-[color:var(--primary)]"
+                  />
+                  Hide my name from the public (your signature is still counted)
+                </label>
 
                 {error ? <p className="text-sm text-destructive">{error}</p> : null}
 

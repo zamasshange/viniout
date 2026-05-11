@@ -12,6 +12,7 @@ type SignatureRow = {
   name: string
   email: string
   country: string | null
+  public_name: boolean
   created_at: Date
 }
 
@@ -79,8 +80,14 @@ async function ensureTable() {
         name TEXT NOT NULL,
         email TEXT NOT NULL,
         country TEXT,
+        public_name BOOLEAN NOT NULL DEFAULT TRUE,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )
+    `
+
+    await db.sql`
+      ALTER TABLE petition_signatures
+      ADD COLUMN IF NOT EXISTS public_name BOOLEAN NOT NULL DEFAULT TRUE
     `
 
     await db.sql`
@@ -105,7 +112,7 @@ async function ensureTable() {
 function mapSignature(row: SignatureRow) {
   return {
     id: row.id,
-    name: row.name,
+    name: row.public_name ? row.name : "Anonymous",
     country: row.country,
     createdAt: row.created_at.toISOString(),
   }
@@ -154,6 +161,7 @@ export async function POST(request: Request) {
     const name = typeof body.name === "string" ? body.name.trim() : ""
     const email = typeof body.email === "string" ? body.email.trim() : ""
     const countryRaw = typeof body.country === "string" ? body.country.trim() : ""
+    const publicName = body.publicName === false ? false : true
 
     if (!name || !email) {
       return NextResponse.json(
@@ -180,9 +188,9 @@ export async function POST(request: Request) {
     }
 
     const insertResult = await db.sql<SignatureRow>`
-      INSERT INTO petition_signatures (name, email, country)
-      VALUES (${name}, ${email}, ${country})
-      RETURNING id, name, email, country, created_at
+      INSERT INTO petition_signatures (name, email, country, public_name)
+      VALUES (${name}, ${email}, ${country}, ${publicName})
+      RETURNING id, name, email, country, public_name, created_at
     `
 
     const totalResult = await db.sql<{ count: string }>`
@@ -202,7 +210,7 @@ export async function POST(request: Request) {
         from: fromEmail,
         to: toEmail,
         subject: "New petition signature received",
-        text: `A new supporter signed the petition.\n\nName: ${name}\nEmail: ${email}\nCountry: ${country ?? "Not provided"}\nTime: ${new Date().toISOString()}`,
+        text: `A new supporter signed the petition.\n\nName: ${name}\nEmail: ${email}\nCountry: ${country ?? "Not provided"}\nPublic name: ${publicName ? "Yes" : "No"}\nTime: ${new Date().toISOString()}`,
       })
     } catch (emailError) {
       emailDelivered = false

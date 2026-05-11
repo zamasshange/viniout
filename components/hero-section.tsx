@@ -50,6 +50,7 @@ function SmokeEffect({ delay, side }: { delay: number; side: "left" | "right" })
 export function HeroSection({ petitionCount }: { petitionCount: number }) {
   const [displayCount, setDisplayCount] = useState(0)
   const [mounted, setMounted] = useState(false)
+  const goal = 200_000
 
   useEffect(() => {
     setMounted(true)
@@ -202,9 +203,12 @@ export function HeroSection({ petitionCount }: { petitionCount: number }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1.2 }}
         >
-          <p className="text-muted-foreground text-sm uppercase tracking-widest mb-2">Supporters United</p>
+          <p className="text-muted-foreground text-sm uppercase tracking-widest mb-2">Goal: 200,000 signatures</p>
           <p className="text-5xl md:text-6xl font-bold text-gradient-gold" style={{ fontFamily: "var(--font-bebas)" }}>
             {displayCount.toLocaleString()}
+          </p>
+          <p className="text-muted-foreground text-sm mt-2">
+            {Math.min(displayCount, goal).toLocaleString()} / {goal.toLocaleString()}
           </p>
         </motion.div>
       </div>
