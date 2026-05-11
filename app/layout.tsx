@@ -15,10 +15,35 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'VINÍCIUS OUT | Real Madrid Fan Movement',
-  description: 'Real Madrid deserves better. Join the movement. Sign the petition.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://viniout.vercel.app'),
+  title: "Vini Out Petition | Real Madrid Fan Movement",
+  description:
+    "Join thousands of Real Madrid supporters calling for change. Sign the Vini Out petition today.",
   generator: 'v0.app',
-  keywords: ['Real Madrid', 'Football', 'Fan Movement', 'Vinícius'],
+  keywords: [
+    "Vini Out",
+    "Vinicius Out",
+    "Vini Out Petition",
+    "Real Madrid petition",
+    "Madrid fans",
+    "Vinicius Jr out",
+  ],
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    title: "Vini Out Petition | Real Madrid Fan Movement",
+    description:
+      "Join thousands of Real Madrid supporters calling for change. Sign the Vini Out petition today.",
+    url: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Vini Out Petition | Real Madrid Fan Movement",
+    description:
+      "Join thousands of Real Madrid supporters calling for change. Sign the Vini Out petition today.",
+  },
 }
 
 export const viewport: Viewport = {
